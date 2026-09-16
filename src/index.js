@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
   ShoppingBag,
@@ -37,24 +37,8 @@ import {
   FileText
 } from 'lucide-react';
 
-// TYPES & DATA STRUCTURES
-export type Category = 'All' | 'Cargo' | 'Chinos' | 'Denim' | 'Joggers';
-
-export interface Product {
-  id: string;
-  name: string;
-  category: Category;
-  price: number;
-  originalPrice: number;
-  isBestseller: boolean;
-  image: string;
-  rating: number;
-  colors: string[];
-  sizes: { size: string; number: number }[];
-  fabric: string;
-}
-
-const PRODUCTS: Product[] = [
+// PRODUCTS DATA
+const PRODUCTS = [
   {
     id: '1',
     name: 'Tactical Cargo Pants',
@@ -62,7 +46,7 @@ const PRODUCTS: Product[] = [
     price: 45,
     originalPrice: 60,
     isBestseller: true,
-    image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&q=80&w=800',
+    image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&q=80',
     rating: 4.8,
     colors: ['Black', 'Olive', 'Khaki'],
     sizes: [
@@ -80,7 +64,7 @@ const PRODUCTS: Product[] = [
     price: 40,
     originalPrice: 50,
     isBestseller: false,
-    image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&q=80&w=800',
+    image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&q=80',
     rating: 4.6,
     colors: ['Beige', 'Navy', 'Grey'],
     sizes: [
@@ -97,7 +81,7 @@ const PRODUCTS: Product[] = [
     price: 55,
     originalPrice: 75,
     isBestseller: true,
-    image: 'https://images.unsplash.com/photo-1542272604-780c36856d67?auto=format&fit=crop&q=80&w=800',
+    image: 'https://images.unsplash.com/photo-1542272604-780c36856d60?auto=format&fit=crop&q=80',
     rating: 4.9,
     colors: ['Dark Blue', 'Light Blue', 'Black'],
     sizes: [
@@ -110,8 +94,8 @@ const PRODUCTS: Product[] = [
 ];
 
 export default function App() {
-  const [selectedCategory, setSelectedCategory] = useState<Category>('All');
-  const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
@@ -119,12 +103,14 @@ export default function App() {
     return PRODUCTS.filter((p) => p.category === selectedCategory);
   }, [selectedCategory]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         return prev.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
       return [...prev, { product, quantity: 1 }];
@@ -134,7 +120,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: 'sans-serif', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 'bold' }}>T&I Apparel</h1>
         <button
           onClick={() => setIsCartOpen(!isCartOpen)}
@@ -157,7 +143,7 @@ export default function App() {
 
       {/* Categories */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
-        {(['All', 'Cargo', 'Chinos', 'Denim', 'Joggers'] as Category[]).map((cat) => (
+        {['All', 'Cargo', 'Chinos', 'Denim', 'Joggers'].map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
@@ -181,8 +167,8 @@ export default function App() {
           <div key={product.id} style={{ border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
             <img src={product.image} alt={product.name} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <div style={{ padding: '15px' }}>
-              <h3 style={{ margin: '0 0 10px 0', fontSize: '18px' }}>{product.name}</h3>
-              <p style={{ margin: '0 0 10px 0', fontWeight: 'bold' }}>${product.price}</p>
+              <h3 style={{ fontSize: '18px', margin: '0 0 8px 0' }}>{product.name}</h3>
+              <p style={{ fontWeight: 'bold', margin: '0 0 12px 0' }}>${product.price}</p>
               <button
                 onClick={() => addToCart(product)}
                 style={{
@@ -215,3 +201,4 @@ if (container) {
     </React.StrictMode>
   );
 }
+
