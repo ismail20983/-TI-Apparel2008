@@ -34,7 +34,6 @@ import {
   ArrowRight,
   Eye,
   FileText,
-  Spreadsheet
 } from 'lucide-react';
 
 // TYPES & DATA STRUCTURES
